@@ -298,23 +298,34 @@
         }
         .modal.active { display: flex; }
 
-        .modal-box {
-            background: var(--c-dark);
-            width: 100%;
-            max-width: 400px;
-            border-radius: 20px;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+        /* THAY THẾ TOÀN BỘ CSS CỦA MODAL BOX VÀ TITLE */
+.modal-box {
+    background: var(--c-dark);
+    width: 100%;
+    max-width: 420px; /* Nới rộng form tối đa lên một chút */
+    border-radius: 20px;
+    /* Tự động ép lề linh hoạt: Màn bé lề nhỏ, màn to lề lớn */
+    padding: clamp(16px, 5vw, 24px); 
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8); /* Đổ bóng 3D cực sâu để bảng xếp hạng nổi lên hẳn */
+    border: 1px solid rgba(255,255,255,0.05); /* Viền sáng bo góc tinh tế */
+}
 
-        .modal-title {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--c-orange);
-        }
+.modal-title {
+    text-align: center;
+    /* CÔNG THỨC MA THUẬT: Cỡ chữ dao động tự động từ 20px đến 26px tùy độ rộng điện thoại */
+    font-size: clamp(20px, 6vw, 26px) !important;
+    font-weight: 900;
+    color: var(--c-orange);
+    /* Ép tuyệt đối không bao giờ được rớt dòng */
+    white-space: nowrap; 
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0px 2px 5px rgba(0,0,0,0.5);
+    margin-bottom: 4px;
+}
 
         .input-score-row {
             display: flex;
