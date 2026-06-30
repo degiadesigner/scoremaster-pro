@@ -665,11 +665,11 @@
         </div>
     </div>
 
- <script>
+<script>
     const colors = ['p-red', 'p-orange', 'p-blue', 'p-green', 'p-purple'];
     const avatars = ['👨', '👩', '👱‍♂️', '👧', '🧔'];
     
-    // 1. TỰ ĐỘNG LƯU & TẢI TÊN: Lấy dữ liệu từ LocalStorage nếu có, nếu không thì dùng mảng trống tên
+    // TẢI DỮ LIỆU TÊN NGƯỜI CHƠI
     const savedPlayers = localStorage.getItem('masterScore_players');
     let players = savedPlayers ? JSON.parse(savedPlayers) : [
         { id: 1, name: '', score: 0 },
@@ -679,53 +679,229 @@
         { id: 5, name: '', score: 0 }
     ];
     
+    // TẢI DỮ LIỆU LỊCH SỬ CÁC VÁN ĐẤU
+    let rounds = JSON.parse(localStorage.getItem('masterScore_rounds')) || [];
     let goal = 100;
-    let activeId = null;
 
+    // KẾT NỐI VỚI GIAO DIỆN
     const screenSetup = document.getElementById('screen-setup');
     const screenGame = document.getElementById('screen-game');
     const setupList = document.getElementById('setup-list');
-    const gameList = document.getElementById('game-list');
     const inputLimit = document.getElementById('input-limit');
     const btnBack = document.getElementById('btn-back');
     const btnReset = document.getElementById('btn-reset');
 
-  V
+    // HÀM LƯU TRỮ CHUNG
+    function saveData() {
+        localStorage.setItem('masterScore_players', JSON.stringify(players));
+        localStorage.setItem('masterScore_rounds', JSON.stringify(rounds));
+    }
+
+    // --- PHẦN 1: MÀN HÌNH CÀI ĐẶT BAN ĐẦU ---
+    function renderSetup() {
+        setupList.innerHTML = '';
+        players.forEach((p, i) => {
+            const div = document.createElement('div');
+            div.className = 'setup-input-row';
+            div.innerHTML = `
+                <div class="avatar">${avatars[i % avatars.length]}</div>
+                <input type="text" value="${p.name}" placeholder="Người chơi ${i + 1}" 
+                       onfocus="this.select()" 
+                       onchange="updateName(${p.id}, this.value)">
+                <button class="btn-action" style="font-size:20px; color:#D9534F;" onclick="removePlayer(${p.id})">✕</button>
+            `;
+            setupList.appendChild(div);
+        });
+        document.getElementById('btn-add-player').style.display = players.length >= 5 ? 'none' : 'block';
+    }
+
+    window.updateName = (id, val) => {
+        const p = players.find(x => x.id === id);
+        if (p) {
+            p.name = val.trim().toUpperCase();
+            saveData();
+        }
+    };
+
+    window.removePlayer = (id) => {
+        players = players.filter(x => x.id !== id);
+        saveData();
+        renderSetup();
+    };
+
+    document.getElementById('btn-add-player').onclick = () => {
+        if(players.length < 5) {
+            players.push({ id: Date.now(), name: '', score: 0 });
+            saveData();
+            renderSetup();
+        }
+    };
+
+    document.getElementById('btn-start').onclick = () => {
+        const val = parseInt(inputLimit.value);
+        goal = isNaN(val) || val <= 0 ? null : val;
+        
+        document.getElementById('goal-display').innerText = goal ? `🎯 Chạm mốc ${goal} điểm là THUA` : 'Chế độ chơi tự do không giới hạn';
+        
+        screenSetup.classList.remove('active');
+        screenGame.classList.add('active');
+        btnBack.style.display = 'block';
+        btnReset.style.display = 'block';
+        
+        renderGame();
+    };
+
+    btnBack.onclick = () => {
+        screenSetup.classList.add('active');
+        screenGame.classList.remove('active');
+        btnBack.style.display = 'none';
+        btnReset.style.display = 'none';
+    };
+
+    // --- PHẦN 2: LOGIC BẢNG ĐIỂM & LỊCH SỬ NHẬP ---
+    function calculateTotals() {
+        players.forEach(p => p.score = 0);
+        rounds.forEach(round => {
+            players.forEach(p => {
+                if(round.scores[p.id] !== undefined) p.score += round.scores[p.id];
+            });
+        });
+    }
+
+    function renderGame() {
+        calculateTotals();
+        const boardHeader = document.getElementById('board-header');
+        const boardBody = document.getElementById('board-body');
+        
+        // Vẽ Hàng Tiêu Đề
+        let headerHTML = `<div class="board-col col-stt">VÁN</div>`;
+        players.forEach((p, i) => {
+            const displayName = p.name || `P${i + 1}`;
+            headerHTML += `
+                <div class="board-col">
+                    <div class="col-name">${displayName}</div>
+                    <div class="col-total">${p.score}</div>
+                </div>`;
+        });
+        boardHeader.innerHTML = headerHTML;
+
+        // Vẽ Lịch Sử (Ván mới nhất đẩy lên trên cùng)
+        boardBody.innerHTML = '';
+        const reversedRounds = [...rounds].reverse();
+        
+        reversedRounds.forEach((round, index) => {
+            const actualRoundNum = rounds.length - index;
+            let rowHTML = `<div class="board-col col-stt">${actualRoundNum}</div>`;
+            
+            players.forEach(p => {
+                const score = round.scores[p.id] || 0;
+                let colorClass = score > 0 ? 'positive' : (score < 0 ? 'negative' : '');
+                let displayScore = score > 0 ? `+${score}` : score;
+                rowHTML += `<div class="board-col col-score ${colorClass}">${displayScore}</div>`;
+            });
+            
+            const div = document.createElement('div');
+            div.className = 'history-row';
+            div.innerHTML = rowHTML;
+            boardBody.appendChild(div);
+        });
+
+        checkGameOver();
+    }
+
+    window.openRoundModal = () => {
+        document.getElementById('current-round-number').innerText = rounds.length + 1;
+        const inputsDiv = document.getElementById('round-inputs');
+        inputsDiv.innerHTML = '';
+        
+        players.forEach((p, i) => {
+            const displayName = p.name || `P${i + 1}`;
+            inputsDiv.innerHTML += `
+                <div class="input-score-row">
+                    <div style="font-size: 18px; font-weight: bold;">${avatars[i % avatars.length]} ${displayName}</div>
+                    <input type="number" id="input-round-p${p.id}" placeholder="0" onfocus="this.select()">
+                </div>
+            `;
+        });
+        document.getElementById('modal-round').classList.add('active');
+        
+        // Tự động nhấp nháy con trỏ vào ô nhập của người đầu tiên
+        setTimeout(() => {
+            if(players.length > 0) {
+                const firstInput = document.getElementById(`input-round-p${players[0].id}`);
+                if(firstInput) firstInput.focus();
+            }
+        }, 100);
+    };
+
+    window.saveRound = () => {
+        let roundScores = {};
+        players.forEach(p => {
+            const val = parseInt(document.getElementById(`input-round-p${p.id}`).value) || 0;
+            roundScores[p.id] = val;
+        });
+        
+        rounds.push({ scores: roundScores });
+        saveData();
+        closeModal('modal-round');
+        renderGame();
+    };
 
     window.closeModal = (id) => {
         document.getElementById(id).classList.remove('active');
     };
 
-    function checkWinner() {
+    // --- PHẦN 3: XẾP HẠNG CHUNG CUỘC ---
+    function checkGameOver() {
         if(!goal) return;
-        const losers = players.filter(p => p.score >= goal);
-        if(losers.length > 0) {
-            losers.sort((a,b) => b.score - a.score);
-            const loserName = losers[0].name ? losers[0].name : 'NGƯỜI CHƠI';
-            document.getElementById('winner-name').innerText = loserName;
-            document.getElementById('modal-winner').classList.add('active');
+        const isGameOver = players.some(p => p.score >= goal);
+        
+        if(isGameOver) {
+            // Sắp xếp: Ai điểm thấp nhất sẽ đứng Hạng 1
+            const rankedPlayers = [...players].sort((a, b) => a.score - b.score);
+            
+            const medals = ['🥇 NHẤT', '🥈 NHÌ', '🥉 BA', '🎖️ TƯ', '💀 BÉT'];
+            const listDiv = document.getElementById('ranking-list');
+            listDiv.innerHTML = '';
+            
+            rankedPlayers.forEach((p, index) => {
+                const displayName = p.name || `Người chơi ${index + 1}`;
+                // Luôn cho người cuối cùng làm Bét
+                const rankName = (index === rankedPlayers.length - 1) ? medals[4] : (medals[index] || `HẠNG ${index + 1}`);
+                
+                listDiv.innerHTML += `
+                    <div class="rank-item">
+                        <div class="rank-medal">${rankName}</div>
+                        <div class="rank-name">${displayName}</div>
+                        <div class="rank-score">${p.score}</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('modal-ranking').classList.add('active');
         }
     }
 
-    window.newGame = () => {
-        closeModal('modal-winner');
-        players.forEach(p => p.score = 0);
-        saveData();
-        btnBack.click();
+    btnReset.onclick = () => {
+        if(confirm('Chơi lại từ đầu? Thao tác này sẽ xóa toàn bộ lịch sử ván cược hiện tại!')) {
+            rounds = [];
+            players.forEach(p => p.score = 0);
+            saveData();
+            renderGame();
+        }
     };
 
+    window.newGame = () => {
+        closeModal('modal-ranking');
+        rounds = [];
+        players.forEach(p => p.score = 0);
+        saveData();
+        btnBack.click(); // Quay về màn hình nhập tên
+    };
+
+    // KÍCH HOẠT APP
     renderSetup();
 
 </script>
-    
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(reg => console.log('Đã đăng ký Service Worker!'))
-                    .catch(err => console.log('Lỗi SW:', err));
-            });
-        }
-    </script>
 </body>
 </html>
