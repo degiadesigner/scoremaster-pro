@@ -338,17 +338,20 @@
         </div>
     </div>
 
+ <!-- MODAL XẾP HẠNG -->
     <div id="modal-ranking" class="modal">
         <div class="modal-box" style="background: var(--bg-color);">
-            <!-- BỘ MÃ LÕI ÉP CHỮ NẰM TRÊN 1 DÒNG (KHÔNG BAO GIỜ BỊ RỚT "CUỘC") -->
-            <div class="modal-title" style="white-space: nowrap !important; font-size: clamp(16px, 5.5vw, 22px) !important; letter-spacing: 0px !important; margin-bottom: 8px;">🏆 KẾT QUẢ CHUNG CUỘC</div>
+            
+            <!-- VŨ KHÍ TỐI THƯỢNG: Dùng &nbsp; hàn chết các chữ, kết hợp ép Font nhỏ lại một chút -->
+            <div class="modal-title" style="font-size: clamp(17px, 5.5vw, 24px) !important; margin-bottom: 8px; width: 100%;">
+                🏆&nbsp;KẾT&nbsp;QUẢ&nbsp;CHUNG&nbsp;CUỘC
+            </div>
             
             <div id="ranking-list" style="display: flex; flex-direction: column; gap: 10px; margin: 20px 0;"></div>
             <button class="btn btn-primary" onclick="newGame()">LẬP BÀN MỚI</button>
             <button class="btn btn-secondary" style="margin-top: 10px;" onclick="closeModal('modal-ranking')">Xem lại Lịch sử</button>
         </div>
     </div>
-
 <script>
     const avatars = ['👨', '👩', '👱‍♂️', '👧', '🧔'];
     const playerColors = ['#D9534F', '#F0AD4E', '#3A87AD', '#5CB85C', '#9B59B6'];
