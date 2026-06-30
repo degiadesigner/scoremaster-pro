@@ -10,13 +10,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <!-- FONT CHỮ MONTSERRAT CỰC NÉT -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* 1. BIẾN MÀU & THIẾT LẬP CƠ BẢN */
         :root {
             --bg-color: #121418;
             --text-light: #FFFFFF;
@@ -45,7 +43,6 @@
             padding: env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 16px) 16px;
         }
 
-        /* Cho phép bôi đen/chỉnh sửa trong ô nhập liệu */
         input {
             user-select: auto !important;
             -webkit-user-select: auto !important;
@@ -60,7 +57,6 @@
             height: 100%;
         }
 
-        /* 2. HEADER */
         .header {
             display: flex;
             flex-direction: column;
@@ -110,7 +106,6 @@
             border-radius: 8px;
         }
 
-        /* 3. MÀN HÌNH & THÀNH PHẦN CHUNG */
         .screen {
             display: none;
             flex-direction: column;
@@ -140,7 +135,6 @@
             border-radius: 8px;
         }
 
-        /* 4. SETUP NGƯỜI CHƠI */
         .setup-input-row {
             display: flex;
             gap: 10px;
@@ -188,7 +182,6 @@
             cursor: pointer;
         }
 
-        /* 5. GIAO DIỆN BẢNG LỊCH SỬ CHUYÊN NGHIỆP */
         .history-board {
             display: flex;
             flex-direction: column;
@@ -221,203 +214,69 @@
         }
         .board-col:last-child { border-right: none; }
 
-        /* MÀU SẮC NHẬN DIỆN MỚI */
         .color-0 { color: #FF5A5A !important; text-shadow: 0 2px 6px rgba(255,90,90,0.4); } 
         .color-1 { color: #FFB84D !important; text-shadow: 0 2px 6px rgba(255,184,77,0.4); } 
         .color-2 { color: #4DB8FF !important; text-shadow: 0 2px 6px rgba(77,184,255,0.4); } 
         .color-3 { color: #5CE65C !important; text-shadow: 0 2px 6px rgba(92,230,92,0.4); } 
         .color-4 { color: #D966FF !important; text-shadow: 0 2px 6px rgba(217,102,255,0.4); } 
 
-        /* SỌC NGỰA VẰN (ZEBRA STRIPING) TÁCH BIỆT CỘT */
         .board-header .board-col:nth-child(even),
-        .history-row .board-col:nth-child(even) {
-            background-color: rgba(255, 255, 255, 0.05) !important;
-        }
+        .history-row .board-col:nth-child(even) { background-color: rgba(255, 255, 255, 0.05) !important; }
         .board-header .board-col:nth-child(odd),
-        .history-row .board-col:nth-child(odd) {
-            background-color: transparent !important;
-        }
-        .board-header .col-stt, .history-row .col-stt {
-            background-color: #111317 !important;
-        }
+        .history-row .board-col:nth-child(odd) { background-color: transparent !important; }
+        .board-header .col-stt, .history-row .col-stt { background-color: #111317 !important; }
 
-        .col-stt {
-            flex: 0 0 50px;
-            color: #888;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .col-name {
-            font-size: 14px;
-            font-weight: 900;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding: 0 4px;
-            letter-spacing: 0.5px;
-        }
-
-        .col-total {
-            font-size: 34px;
-            font-weight: 900;
-            letter-spacing: -1.5px;
-            margin-top: 2px;
-        }
-
-        .board-body {
-            overflow-y: auto;
-            flex-grow: 1;
-            max-height: 55vh;
-        }
-
-        .history-row {
-            display: flex;
-            padding: 16px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            align-items: center;
-        }
-        
+        .col-stt { flex: 0 0 50px; color: #888; font-size: 14px; font-weight: 700; }
+        .col-name { font-size: 14px; font-weight: 900; text-transform: uppercase; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 0 4px; letter-spacing: 0.5px; }
+        .col-total { font-size: 34px; font-weight: 900; letter-spacing: -1.5px; margin-top: 2px; }
+        .board-body { overflow-y: auto; flex-grow: 1; max-height: 55vh; }
+        .history-row { display: flex; padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.04); align-items: center; }
         .editable-row { cursor: pointer; transition: 0.2s; }
         .editable-row:active { background: rgba(255,255,255,0.15); }
-        .history-row:nth-child(even) { background: rgba(255,255,255,0.02); }
-
         .col-score { font-size: 20px; font-weight: 700; }
         .col-score.positive { color: var(--c-red); }
         .col-score.negative { color: var(--c-green); }
 
-        /* 6. MODALS VÀ NÚT BẤM */
-        .btn {
-            padding: 16px;
-            border-radius: 12px;
-            border: none;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            width: 100%;
-            margin-top: auto;
-            text-transform: uppercase;
-        }
+        .btn { padding: 16px; border-radius: 12px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; width: 100%; margin-top: auto; text-transform: uppercase; }
         .btn-primary { background-color: var(--c-orange); color: #000; }
         .btn-secondary { background-color: rgba(255,255,255,0.1); color: white; }
         .btn-danger { background-color: var(--c-red); color: white; }
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); 
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            padding: 16px;
-        }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; z-index: 100; padding: 16px; }
         .modal.active { display: flex; }
 
         .modal-box {
-            background: var(--c-dark);
-            width: 100%;
-            max-width: 420px;
-            border-radius: 20px;
-            padding: clamp(16px, 5vw, 24px); 
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-            border: 1px solid rgba(255,255,255,0.05);
+            background: var(--c-dark); width: 100%; max-width: 420px; border-radius: 20px;
+            padding: clamp(16px, 5vw, 24px); display: flex; flex-direction: column; gap: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* FIX LỖI RỚT DÒNG CHO TIÊU ĐỀ KẾT QUẢ VÀ CẢNH BÁO */
-        .modal-title {
-            text-align: center;
-            font-size: clamp(18px, 6vw, 26px) !important;
-            font-weight: 900;
-            color: var(--c-orange);
-            white-space: nowrap; 
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            text-shadow: 0px 2px 5px rgba(0,0,0,0.5);
-            margin-bottom: 4px;
-        }
+        .modal-title { text-align: center; font-weight: 900; color: var(--c-orange); text-transform: uppercase; text-shadow: 0px 2px 5px rgba(0,0,0,0.5); }
+        .modal-title-danger { color: var(--c-red) !important; }
+        .confirm-msg { text-align: center; font-size: 16px; line-height: 1.5; color: #eee; margin-bottom: 10px; }
 
-        /* RIÊNG TIÊU ĐỀ CHO CẢNH BÁO MÀU ĐỎ */
-        .modal-title-danger {
-            color: var(--c-red) !important;
-        }
-
-        .input-score-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0,0,0,0.2);
-            padding: 10px 16px;
-            border-radius: 12px;
-        }
-        .input-score-row input {
-            width: 80px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            padding: 8px;
-            border-radius: 8px;
-            border: none;
-            background: #1e2126;
-            color: white;
-            outline: none;
-        }
+        .input-score-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); padding: 10px 16px; border-radius: 12px; }
+        .input-score-row input { width: 80px; text-align: center; font-size: 22px; font-weight: bold; padding: 8px; border-radius: 8px; border: none; background: #1e2126; color: white; outline: none; }
         .input-score-row input:focus { border: 1px solid var(--c-orange); }
 
-        .rank-item {
-            display: flex;
-            align-items: center;
-            padding: 14px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 12px;
-            gap: 16px;
-        }
+        .rank-item { display: flex; align-items: center; padding: 14px; background: rgba(255,255,255,0.05); border-radius: 12px; gap: 16px; }
         .rank-medal { font-size: 22px; font-weight: bold; width: 80px; }
         .rank-name { flex: 1; font-size: 18px; font-weight: 800; text-transform: uppercase; }
         .rank-score { font-size: 26px; font-weight: 900; color: var(--c-orange); }
-
-        .copyright-footer {
-            text-align: center;
-            font-size: 12px;
-            color: #555;
-            margin-top: auto;
-            padding-top: 20px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-
-        /* TEXT CẢNH BÁO CHO THÔNG BÁO XÓA */
-        .confirm-msg {
-            text-align: center;
-            font-size: 16px;
-            line-height: 1.5;
-            color: #eee;
-            margin-bottom: 10px;
-        }
+        .copyright-footer { text-align: center; font-size: 12px; color: #555; margin-top: auto; padding-top: 20px; font-weight: 500; letter-spacing: 0.5px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- HEADER -->
         <div class="header">
-            <div id="header-title">
-                <img src="logo.png" alt="Logo" class="app-logo">
-                TÍNH ĐIỂM MASTER
-            </div>
+            <div id="header-title"><img src="logo.png" alt="Logo" class="app-logo"> TÍNH ĐIỂM MASTER</div>
             <div class="header-icons">
                 <span id="btn-back" style="display:none;">⚙️ Cài đặt</span>
                 <span id="btn-reset" style="display:none;">🔄 Chơi lại</span>
             </div>
         </div>
 
-        <!-- MÀN HÌNH SETUP -->
         <div id="screen-setup" class="screen active">
             <h3 class="section-title">DANH SÁCH ĐẤU THỦ</h3>
             <div id="setup-list" style="display:flex; flex-direction:column; gap:10px;"></div>
@@ -430,7 +289,6 @@
             <button class="btn btn-primary" id="btn-start" style="margin-top: 30px;">BẮT ĐẦU VÁN MỚI</button>
         </div>
 
-        <!-- MÀN HÌNH CHƠI GAME DẠNG BẢNG -->
         <div id="screen-game" class="screen">
             <div class="goal-text" id="goal-display">🎯 Chạm mốc 100 điểm là THUA</div>
             <div class="history-board">
@@ -440,17 +298,13 @@
             <button class="btn btn-primary" style="margin-top: 16px; padding: 20px; font-size: 18px;" onclick="openRoundModal()">+ NHẬP ĐIỂM VÁN MỚI</button>
         </div>
 
-        <!-- BẢN QUYỀN -->
-        <div class="copyright-footer">
-            © Bản quyền MinhTT, 2026<br>
-            SĐT: 0987334004
-        </div>
+        <div class="copyright-footer">© Bản quyền MinhTT, 2026<br>SĐT: 0987334004</div>
     </div>
 
-    <!-- MODAL NHẬP ĐIỂM MỚI -->
+    <!-- CÁC MODALS -->
     <div id="modal-round" class="modal">
         <div class="modal-box">
-            <div class="modal-title">NHẬP ĐIỂM VÁN <span id="current-round-number"></span></div>
+            <div class="modal-title" style="font-size: 22px;">NHẬP ĐIỂM VÁN <span id="current-round-number"></span></div>
             <div id="round-inputs" style="display: flex; flex-direction: column; gap: 12px; margin: 16px 0;"></div>
             <div style="display:flex; gap:10px;">
                 <button class="btn btn-secondary" onclick="closeModal('modal-round')">Hủy</button>
@@ -459,10 +313,9 @@
         </div>
     </div>
 
-    <!-- MODAL SỬA ĐIỂM CŨ -->
     <div id="modal-edit" class="modal">
         <div class="modal-box">
-            <div class="modal-title">SỬA ĐIỂM VÁN <span id="edit-round-number"></span></div>
+            <div class="modal-title" style="font-size: 22px;">SỬA ĐIỂM VÁN <span id="edit-round-number"></span></div>
             <div id="edit-inputs" style="display: flex; flex-direction: column; gap: 12px; margin: 16px 0;"></div>
             <div style="display:flex; flex-direction:column; gap:10px;">
                 <div style="display:flex; gap:10px;">
@@ -474,10 +327,9 @@
         </div>
     </div>
 
-    <!-- TÍNH NĂNG MỚI: MODAL XÁC NHẬN CẢNH BÁO (THAY THẾ CONFIRM MẶC ĐỊNH) -->
     <div id="modal-confirm" class="modal" style="z-index: 999;">
         <div class="modal-box" style="max-width: 350px;">
-            <div class="modal-title modal-title-danger">⚠️ XÁC NHẬN</div>
+            <div class="modal-title modal-title-danger" style="font-size: 24px;">⚠️ XÁC NHẬN</div>
             <div class="confirm-msg" id="confirm-message-text">Bạn có chắc chắn muốn thực hiện?</div>
             <div style="display:flex; gap:10px; margin-top: 10px;">
                 <button class="btn btn-secondary" onclick="closeConfirmModal()">Hủy Bỏ</button>
@@ -486,10 +338,11 @@
         </div>
     </div>
 
-    <!-- MODAL XẾP HẠNG -->
     <div id="modal-ranking" class="modal">
         <div class="modal-box" style="background: var(--bg-color);">
-            <div class="modal-title">🏆 KẾT QUẢ CHUNG CUỘC</div>
+            <!-- BỘ MÃ LÕI ÉP CHỮ NẰM TRÊN 1 DÒNG (KHÔNG BAO GIỜ BỊ RỚT "CUỘC") -->
+            <div class="modal-title" style="white-space: nowrap !important; font-size: clamp(16px, 5.5vw, 22px) !important; letter-spacing: 0px !important; margin-bottom: 8px;">🏆 KẾT QUẢ CHUNG CUỘC</div>
+            
             <div id="ranking-list" style="display: flex; flex-direction: column; gap: 10px; margin: 20px 0;"></div>
             <button class="btn btn-primary" onclick="newGame()">LẬP BÀN MỚI</button>
             <button class="btn btn-secondary" style="margin-top: 10px;" onclick="closeModal('modal-ranking')">Xem lại Lịch sử</button>
@@ -512,7 +365,7 @@
     let rounds = JSON.parse(localStorage.getItem('masterScore_rounds')) || [];
     let goal = 100;
     let editingIndex = -1;
-    let confirmActionCallback = null; // Biến lưu hành động chờ xác nhận
+    let confirmActionCallback = null;
 
     const screenSetup = document.getElementById('screen-setup');
     const screenGame = document.getElementById('screen-game');
@@ -526,7 +379,6 @@
         localStorage.setItem('masterScore_rounds', JSON.stringify(rounds));
     }
 
-    // TÍNH NĂNG MỚI: HÀM GỌI POPUP CẢNH BÁO
     window.showConfirmModal = (message, callback) => {
         document.getElementById('confirm-message-text').innerText = message;
         confirmActionCallback = callback;
@@ -539,9 +391,7 @@
     };
 
     window.executeConfirm = () => {
-        if(confirmActionCallback) {
-            confirmActionCallback();
-        }
+        if(confirmActionCallback) confirmActionCallback();
         closeConfirmModal();
     };
 
@@ -553,8 +403,7 @@
             div.innerHTML = `
                 <div class="avatar">${avatars[i % avatars.length]}</div>
                 <input type="text" value="${p.name}" placeholder="Người chơi ${i + 1}" 
-                       onfocus="this.select()" 
-                       onchange="updateName(${p.id}, this.value)">
+                       onfocus="this.select()" onchange="updateName(${p.id}, this.value)">
                 <button class="btn-action" style="font-size:20px; color:#D9534F;" onclick="removePlayer(${p.id})">✕</button>
             `;
             setupList.appendChild(div);
@@ -564,23 +413,18 @@
 
     window.updateName = (id, val) => {
         const p = players.find(x => x.id === id);
-        if (p) {
-            p.name = val.trim().toUpperCase();
-            saveData();
-        }
+        if (p) { p.name = val.trim().toUpperCase(); saveData(); }
     };
 
     window.removePlayer = (id) => {
         players = players.filter(x => x.id !== id);
-        saveData();
-        renderSetup();
+        saveData(); renderSetup();
     };
 
     document.getElementById('btn-add-player').onclick = () => {
         if(players.length < 5) {
             players.push({ id: Date.now(), name: '', score: 0 });
-            saveData();
-            renderSetup();
+            saveData(); renderSetup();
         }
     };
 
@@ -593,7 +437,6 @@
         screenGame.classList.add('active');
         btnBack.style.display = 'block';
         btnReset.style.display = 'block';
-        
         renderGame();
     };
 
@@ -683,11 +526,8 @@
             const val = parseInt(document.getElementById(`input-round-p${p.id}`).value) || 0;
             roundScores[p.id] = val;
         });
-        
         rounds.push({ scores: roundScores });
-        saveData();
-        closeModal('modal-round');
-        renderGame();
+        saveData(); closeModal('modal-round'); renderGame();
     };
 
     window.openEditModal = (index) => {
@@ -718,27 +558,19 @@
             const val = parseInt(document.getElementById(`edit-round-p${p.id}`).value) || 0;
             roundScores[p.id] = val;
         });
-        
         rounds[editingIndex].scores = roundScores;
-        saveData();
-        closeModal('modal-edit');
-        renderGame();
+        saveData(); closeModal('modal-edit'); renderGame();
     };
 
-    // ĐÃ SỬA: SỬ DỤNG POPUP CẢNH BÁO MỚI THAY VÌ CONFIRM MẶC ĐỊNH
     window.confirmDeleteRound = () => {
         if(editingIndex === -1) return;
         showConfirmModal('Bạn có chắc chắn muốn xóa hẳn ván này không?\nToàn bộ điểm sẽ được tự động tính lại.', () => {
             rounds.splice(editingIndex, 1);
-            saveData();
-            closeModal('modal-edit');
-            renderGame();
+            saveData(); closeModal('modal-edit'); renderGame();
         });
     };
 
-    window.closeModal = (id) => {
-        document.getElementById(id).classList.remove('active');
-    };
+    window.closeModal = (id) => { document.getElementById(id).classList.remove('active'); };
 
     function checkGameOver() {
         if(!goal) return;
@@ -753,35 +585,28 @@
             rankedPlayers.forEach((p, index) => {
                 const displayName = p.name || `Người chơi ${index + 1}`;
                 const rankName = (index === rankedPlayers.length - 1) ? medals[4] : (medals[index] || `HẠNG ${index + 1}`);
-                
                 listDiv.innerHTML += `
                     <div class="rank-item">
                         <div class="rank-medal">${rankName}</div>
                         <div class="rank-name">${displayName}</div>
                         <div class="rank-score">${p.score}</div>
-                    </div>
-                `;
+                    </div>`;
             });
             document.getElementById('modal-ranking').classList.add('active');
         }
     }
 
-    // ĐÃ SỬA: SỬ DỤNG POPUP CẢNH BÁO MỚI KHI BẤM NÚT CHƠI LẠI
     btnReset.onclick = () => {
         showConfirmModal('Bạn muốn chơi lại từ đầu?\nToàn bộ lịch sử điểm của bàn này sẽ bị xóa sạch!', () => {
-            rounds = [];
-            players.forEach(p => p.score = 0);
-            saveData();
-            renderGame();
+            rounds = []; players.forEach(p => p.score = 0);
+            saveData(); renderGame();
         });
     };
 
     window.newGame = () => {
         closeModal('modal-ranking');
-        rounds = [];
-        players.forEach(p => p.score = 0);
-        saveData();
-        btnBack.click();
+        rounds = []; players.forEach(p => p.score = 0);
+        saveData(); btnBack.click();
     };
 
     renderSetup();
