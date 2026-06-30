@@ -30,9 +30,6 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: manipulation; 
             font-family: 'Montserrat', sans-serif !important; 
         }
 
@@ -43,6 +40,17 @@
             display: flex;
             flex-direction: column;
             padding: env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 16px) 16px;
+            
+            /* SỬA LỖI KHÓA PHÍM: Chỉ ngăn bôi đen ở Body, chừa lại thẻ Input */
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation; 
+        }
+
+        /* ÉP CÁC Ô NHẬP LIỆU PHẢI CHO PHÉP TƯƠNG TÁC/BÔI ĐEN */
+        input {
+            user-select: auto !important;
+            -webkit-user-select: auto !important;
         }
 
         .container {
@@ -250,7 +258,6 @@
             align-items: center;
         }
         
-        /* Hiệu ứng khi bấm vào dòng lịch sử để sửa */
         .editable-row { cursor: pointer; transition: 0.2s; }
         .editable-row:active { background: rgba(255,255,255,0.1); }
         .history-row:nth-child(even) { background: rgba(255,255,255,0.02); }
@@ -354,7 +361,6 @@
 <body>
 
     <div class="container">
-        
         <!-- HEADER -->
         <div class="header">
             <div id="header-title">
@@ -380,7 +386,7 @@
             <button class="btn btn-primary" id="btn-start" style="margin-top: 30px;">BẮT ĐẦU VÁN MỚI</button>
         </div>
 
-        <!-- MÀN HÌNH CHƠI GAME DẠNG BẢNG LƯỚI -->
+        <!-- MÀN HÌNH CHƠI GAME -->
         <div id="screen-game" class="screen">
             <div class="goal-text" id="goal-display">🎯 Chạm mốc 100 điểm là THUA</div>
             <div class="history-board">
@@ -390,14 +396,13 @@
             <button class="btn btn-primary" style="margin-top: 16px; padding: 20px; font-size: 18px;" onclick="openRoundModal()">+ NHẬP ĐIỂM VÁN MỚI</button>
         </div>
 
-        <!-- BẢN QUYỀN -->
         <div class="copyright-footer">
             © Bản quyền MinhTT, 2026<br>
             SĐT: 0987334004
         </div>
     </div>
 
-    <!-- MODAL NHẬP ĐIỂM VÁN MỚI -->
+    <!-- MODAL NHẬP ĐIỂM MỚI -->
     <div id="modal-round" class="modal">
         <div class="modal-box">
             <div class="modal-title">NHẬP ĐIỂM VÁN <span id="current-round-number"></span></div>
@@ -409,7 +414,7 @@
         </div>
     </div>
 
-    <!-- MODAL SỬA/XÓA ĐIỂM (TÍNH NĂNG MỚI) -->
+    <!-- MODAL SỬA ĐIỂM CŨ -->
     <div id="modal-edit" class="modal">
         <div class="modal-box">
             <div class="modal-title">SỬA ĐIỂM VÁN <span id="edit-round-number"></span></div>
@@ -419,13 +424,12 @@
                     <button class="btn btn-secondary" onclick="closeModal('modal-edit')">Hủy</button>
                     <button class="btn btn-primary" onclick="saveEditRound()">Cập nhật</button>
                 </div>
-                <!-- Nút xóa ván siêu nổi bật -->
                 <button class="btn btn-danger" onclick="deleteRound()">🗑️ XÓA VÁN NÀY</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL XẾP HẠNG CHUNG CUỘC -->
+    <!-- MODAL KẾT QUẢ -->
     <div id="modal-ranking" class="modal">
         <div class="modal-box" style="background: var(--bg-color);">
             <div class="modal-title" style="font-size: 26px;">🏆 KẾT QUẢ CHUNG CUỘC</div>
@@ -449,7 +453,7 @@
     
     let rounds = JSON.parse(localStorage.getItem('masterScore_rounds')) || [];
     let goal = 100;
-    let editingIndex = -1; // Biến lưu vết ván đang sửa
+    let editingIndex = -1;
 
     const screenSetup = document.getElementById('screen-setup');
     const screenGame = document.getElementById('screen-game');
@@ -505,7 +509,6 @@
     document.getElementById('btn-start').onclick = () => {
         const val = parseInt(inputLimit.value);
         goal = isNaN(val) || val <= 0 ? null : val;
-        
         document.getElementById('goal-display').innerText = goal ? `🎯 Chạm mốc ${goal} điểm là THUA` : 'Chế độ chơi tự do không giới hạn';
         
         screenSetup.classList.remove('active');
@@ -548,34 +551,28 @@
         });
         boardHeader.innerHTML = headerHTML;
 
-        boardBody.innerHTML = '';
+        // VẼ BẢNG BẰNG CHUỖI HTML ĐỂ ĐẢM BẢO ONCLICK HOẠT ĐỘNG 100%
+        let rowsHTML = '';
         const reversedRounds = [...rounds].reverse();
         
         reversedRounds.forEach((round, index) => {
             const actualRoundNum = rounds.length - index;
-            // Xác định vị trí chuẩn của ván trong mảng gốc
             const trueIndex = rounds.length - 1 - index; 
             
-            let rowHTML = `<div class="board-col col-stt">${actualRoundNum}</div>`;
+            let innerHTML = `<div class="board-col col-stt">${actualRoundNum}</div>`;
             
             players.forEach(p => {
                 const score = round.scores[p.id] || 0;
                 let colorClass = score > 0 ? 'positive' : (score < 0 ? 'negative' : '');
                 let displayScore = score > 0 ? `+${score}` : score;
-                rowHTML += `<div class="board-col col-score ${colorClass}">${displayScore}</div>`;
+                innerHTML += `<div class="board-col col-score ${colorClass}">${displayScore}</div>`;
             });
             
-            const div = document.createElement('div');
-            // Thêm class editable-row để tạo hiệu ứng bấm
-            div.className = 'history-row editable-row'; 
-            div.innerHTML = rowHTML;
-            
-            // Kích hoạt tính năng Sửa/Xóa khi chạm vào dòng
-            div.onclick = () => openEditModal(trueIndex); 
-            
-            boardBody.appendChild(div);
+            // Nhúng thẳng hàm onclick vào HTML để máy nào cũng chạm được
+            rowsHTML += `<div class="history-row editable-row" onclick="openEditModal(${trueIndex})">${innerHTML}</div>`;
         });
-
+        
+        boardBody.innerHTML = rowsHTML;
         checkGameOver();
     }
 
@@ -616,7 +613,6 @@
         renderGame();
     };
 
-    // TÍNH NĂNG MỚI: MỞ BẢNG SỬA ĐIỂM
     window.openEditModal = (index) => {
         editingIndex = index;
         const round = rounds[index];
@@ -638,7 +634,6 @@
         document.getElementById('modal-edit').classList.add('active');
     };
 
-    // TÍNH NĂNG MỚI: LƯU LẠI ĐIỂM ĐÃ SỬA
     window.saveEditRound = () => {
         if(editingIndex === -1) return;
         let roundScores = {};
@@ -650,14 +645,13 @@
         rounds[editingIndex].scores = roundScores;
         saveData();
         closeModal('modal-edit');
-        renderGame(); // renderGame() sẽ tự động tính toán lại điểm tổng siêu mượt
+        renderGame();
     };
 
-    // TÍNH NĂNG MỚI: XÓA VÁN ĐẤU BỊ NHẬP SAI
     window.deleteRound = () => {
         if(editingIndex === -1) return;
-        if(confirm('Bạn có chắc chắn muốn xóa hẳn ván này không?')) {
-            rounds.splice(editingIndex, 1); // Cắt ván này ra khỏi lịch sử
+        if(confirm('Bạn có chắc chắn muốn xóa hẳn ván này không? Toàn bộ điểm sẽ được tính lại.')) {
+            rounds.splice(editingIndex, 1);
             saveData();
             closeModal('modal-edit');
             renderGame();
@@ -711,7 +705,6 @@
         btnBack.click();
     };
 
-    // KHỞI ĐỘNG
     renderSetup();
 </script>
 </body>
