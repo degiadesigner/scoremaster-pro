@@ -10,11 +10,13 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
+    <!-- FONT CHỮ MONTSERRAT CỰC NÉT -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
+        /* 1. BIẾN MÀU & THIẾT LẬP CƠ BẢN */
         :root {
             --bg-color: #121418;
             --text-light: #FFFFFF;
@@ -43,6 +45,7 @@
             padding: env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 16px) 16px;
         }
 
+        /* Cho phép bôi đen/chỉnh sửa trong ô nhập liệu */
         input {
             user-select: auto !important;
             -webkit-user-select: auto !important;
@@ -57,6 +60,7 @@
             height: 100%;
         }
 
+        /* 2. HEADER */
         .header {
             display: flex;
             flex-direction: column;
@@ -106,6 +110,7 @@
             border-radius: 8px;
         }
 
+        /* 3. MÀN HÌNH & THÀNH PHẦN CHUNG */
         .screen {
             display: none;
             flex-direction: column;
@@ -135,6 +140,7 @@
             border-radius: 8px;
         }
 
+        /* 4. SETUP NGƯỜI CHƠI */
         .setup-input-row {
             display: flex;
             gap: 10px;
@@ -182,27 +188,27 @@
             cursor: pointer;
         }
 
-        /* ----- GIAO DIỆN BẢNG LƯỚI ĐẲNG CẤP ----- */
+        /* 5. GIAO DIỆN BẢNG LỊCH SỬ CHUYÊN NGHIỆP */
         .history-board {
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            background: var(--c-dark);
+            background: #171a1f;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* Header 3D Tách Biệt */
         .board-header {
             display: flex;
-            background: #17191e;
-            padding: 18px 0 14px 0;
-            border-bottom: 2px solid rgba(255,255,255,0.05);
+            background: #111317;
+            padding: 20px 0 16px 0;
+            border-bottom: 3px solid rgba(255,255,255,0.1);
             position: sticky;
             top: 0;
             z-index: 10;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.5);
         }
 
         .board-col {
@@ -215,10 +221,24 @@
         }
         .board-col:last-child { border-right: none; }
 
-        /* Hiệu ứng ZEBRA DỌC: Các cột chẵn được tô nền mờ */
+        /* MÀU SẮC NHẬN DIỆN MỚI */
+        .color-0 { color: #FF5A5A !important; text-shadow: 0 2px 6px rgba(255,90,90,0.4); } 
+        .color-1 { color: #FFB84D !important; text-shadow: 0 2px 6px rgba(255,184,77,0.4); } 
+        .color-2 { color: #4DB8FF !important; text-shadow: 0 2px 6px rgba(77,184,255,0.4); } 
+        .color-3 { color: #5CE65C !important; text-shadow: 0 2px 6px rgba(92,230,92,0.4); } 
+        .color-4 { color: #D966FF !important; text-shadow: 0 2px 6px rgba(217,102,255,0.4); } 
+
+        /* SỌC NGỰA VẰN (ZEBRA STRIPING) TÁCH BIỆT CỘT */
         .board-header .board-col:nth-child(even),
         .history-row .board-col:nth-child(even) {
-            background-color: rgba(255,255,255,0.025);
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+        .board-header .board-col:nth-child(odd),
+        .history-row .board-col:nth-child(odd) {
+            background-color: transparent !important;
+        }
+        .board-header .col-stt, .history-row .col-stt {
+            background-color: #111317 !important;
         }
 
         .col-stt {
@@ -232,21 +252,19 @@
             font-size: 14px;
             font-weight: 900;
             text-transform: uppercase;
-            margin-bottom: 2px;
+            margin-bottom: 4px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             padding: 0 4px;
             letter-spacing: 0.5px;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
-        /* Phóng to số điểm tổng */
         .col-total {
             font-size: 34px;
             font-weight: 900;
-            letter-spacing: -1px;
-            text-shadow: 2px 3px 6px rgba(0,0,0,0.5);
+            letter-spacing: -1.5px;
+            margin-top: 2px;
         }
 
         .board-body {
@@ -263,13 +281,14 @@
         }
         
         .editable-row { cursor: pointer; transition: 0.2s; }
-        .editable-row:active { background: rgba(255,255,255,0.08); }
+        .editable-row:active { background: rgba(255,255,255,0.15); }
+        .history-row:nth-child(even) { background: rgba(255,255,255,0.02); }
 
         .col-score { font-size: 20px; font-weight: 700; }
         .col-score.positive { color: var(--c-red); }
         .col-score.negative { color: var(--c-green); }
 
-        /* ----- MODALS & NÚT BẤM ----- */
+        /* 6. MODALS VÀ NÚT BẤM */
         .btn {
             padding: 16px;
             border-radius: 12px;
@@ -298,34 +317,36 @@
         }
         .modal.active { display: flex; }
 
-        /* THAY THẾ TOÀN BỘ CSS CỦA MODAL BOX VÀ TITLE */
-.modal-box {
-    background: var(--c-dark);
-    width: 100%;
-    max-width: 420px; /* Nới rộng form tối đa lên một chút */
-    border-radius: 20px;
-    /* Tự động ép lề linh hoạt: Màn bé lề nhỏ, màn to lề lớn */
-    padding: clamp(16px, 5vw, 24px); 
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.8); /* Đổ bóng 3D cực sâu để bảng xếp hạng nổi lên hẳn */
-    border: 1px solid rgba(255,255,255,0.05); /* Viền sáng bo góc tinh tế */
-}
+        .modal-box {
+            background: var(--c-dark);
+            width: 100%;
+            max-width: 420px;
+            border-radius: 20px;
+            padding: clamp(16px, 5vw, 24px); 
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
 
-.modal-title {
-    text-align: center;
-    /* CÔNG THỨC MA THUẬT: Cỡ chữ dao động tự động từ 20px đến 26px tùy độ rộng điện thoại */
-    font-size: clamp(20px, 6vw, 26px) !important;
-    font-weight: 900;
-    color: var(--c-orange);
-    /* Ép tuyệt đối không bao giờ được rớt dòng */
-    white-space: nowrap; 
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    text-shadow: 0px 2px 5px rgba(0,0,0,0.5);
-    margin-bottom: 4px;
-}
+        /* FIX LỖI RỚT DÒNG CHO TIÊU ĐỀ KẾT QUẢ VÀ CẢNH BÁO */
+        .modal-title {
+            text-align: center;
+            font-size: clamp(18px, 6vw, 26px) !important;
+            font-weight: 900;
+            color: var(--c-orange);
+            white-space: nowrap; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-shadow: 0px 2px 5px rgba(0,0,0,0.5);
+            margin-bottom: 4px;
+        }
+
+        /* RIÊNG TIÊU ĐỀ CHO CẢNH BÁO MÀU ĐỎ */
+        .modal-title-danger {
+            color: var(--c-red) !important;
+        }
 
         .input-score-row {
             display: flex;
@@ -370,11 +391,21 @@
             font-weight: 500;
             letter-spacing: 0.5px;
         }
+
+        /* TEXT CẢNH BÁO CHO THÔNG BÁO XÓA */
+        .confirm-msg {
+            text-align: center;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #eee;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 
     <div class="container">
+        <!-- HEADER -->
         <div class="header">
             <div id="header-title">
                 <img src="logo.png" alt="Logo" class="app-logo">
@@ -386,6 +417,7 @@
             </div>
         </div>
 
+        <!-- MÀN HÌNH SETUP -->
         <div id="screen-setup" class="screen active">
             <h3 class="section-title">DANH SÁCH ĐẤU THỦ</h3>
             <div id="setup-list" style="display:flex; flex-direction:column; gap:10px;"></div>
@@ -398,6 +430,7 @@
             <button class="btn btn-primary" id="btn-start" style="margin-top: 30px;">BẮT ĐẦU VÁN MỚI</button>
         </div>
 
+        <!-- MÀN HÌNH CHƠI GAME DẠNG BẢNG -->
         <div id="screen-game" class="screen">
             <div class="goal-text" id="goal-display">🎯 Chạm mốc 100 điểm là THUA</div>
             <div class="history-board">
@@ -407,6 +440,7 @@
             <button class="btn btn-primary" style="margin-top: 16px; padding: 20px; font-size: 18px;" onclick="openRoundModal()">+ NHẬP ĐIỂM VÁN MỚI</button>
         </div>
 
+        <!-- BẢN QUYỀN -->
         <div class="copyright-footer">
             © Bản quyền MinhTT, 2026<br>
             SĐT: 0987334004
@@ -425,7 +459,7 @@
         </div>
     </div>
 
-    <!-- MODAL SỬA ĐIỂM -->
+    <!-- MODAL SỬA ĐIỂM CŨ -->
     <div id="modal-edit" class="modal">
         <div class="modal-box">
             <div class="modal-title">SỬA ĐIỂM VÁN <span id="edit-round-number"></span></div>
@@ -435,7 +469,19 @@
                     <button class="btn btn-secondary" onclick="closeModal('modal-edit')">Hủy</button>
                     <button class="btn btn-primary" onclick="saveEditRound()">Cập nhật</button>
                 </div>
-                <button class="btn btn-danger" onclick="deleteRound()">🗑️ XÓA VÁN NÀY</button>
+                <button class="btn btn-danger" onclick="confirmDeleteRound()">🗑️ XÓA VÁN NÀY</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TÍNH NĂNG MỚI: MODAL XÁC NHẬN CẢNH BÁO (THAY THẾ CONFIRM MẶC ĐỊNH) -->
+    <div id="modal-confirm" class="modal" style="z-index: 999;">
+        <div class="modal-box" style="max-width: 350px;">
+            <div class="modal-title modal-title-danger">⚠️ XÁC NHẬN</div>
+            <div class="confirm-msg" id="confirm-message-text">Bạn có chắc chắn muốn thực hiện?</div>
+            <div style="display:flex; gap:10px; margin-top: 10px;">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">Hủy Bỏ</button>
+                <button class="btn btn-danger" onclick="executeConfirm()">Đồng Ý</button>
             </div>
         </div>
     </div>
@@ -443,7 +489,7 @@
     <!-- MODAL XẾP HẠNG -->
     <div id="modal-ranking" class="modal">
         <div class="modal-box" style="background: var(--bg-color);">
-            <div class="modal-title" style="font-size: 26px;">🏆 KẾT QUẢ CHUNG CUỘC</div>
+            <div class="modal-title">🏆 KẾT QUẢ CHUNG CUỘC</div>
             <div id="ranking-list" style="display: flex; flex-direction: column; gap: 10px; margin: 20px 0;"></div>
             <button class="btn btn-primary" onclick="newGame()">LẬP BÀN MỚI</button>
             <button class="btn btn-secondary" style="margin-top: 10px;" onclick="closeModal('modal-ranking')">Xem lại Lịch sử</button>
@@ -452,7 +498,6 @@
 
 <script>
     const avatars = ['👨', '👩', '👱‍♂️', '👧', '🧔'];
-    // BẢNG MÀU NHẬN DIỆN CHO TỪNG NGƯỜI CHƠI
     const playerColors = ['#D9534F', '#F0AD4E', '#3A87AD', '#5CB85C', '#9B59B6'];
     
     const savedPlayers = localStorage.getItem('masterScore_players');
@@ -467,6 +512,7 @@
     let rounds = JSON.parse(localStorage.getItem('masterScore_rounds')) || [];
     let goal = 100;
     let editingIndex = -1;
+    let confirmActionCallback = null; // Biến lưu hành động chờ xác nhận
 
     const screenSetup = document.getElementById('screen-setup');
     const screenGame = document.getElementById('screen-game');
@@ -479,6 +525,25 @@
         localStorage.setItem('masterScore_players', JSON.stringify(players));
         localStorage.setItem('masterScore_rounds', JSON.stringify(rounds));
     }
+
+    // TÍNH NĂNG MỚI: HÀM GỌI POPUP CẢNH BÁO
+    window.showConfirmModal = (message, callback) => {
+        document.getElementById('confirm-message-text').innerText = message;
+        confirmActionCallback = callback;
+        document.getElementById('modal-confirm').classList.add('active');
+    };
+
+    window.closeConfirmModal = () => {
+        document.getElementById('modal-confirm').classList.remove('active');
+        confirmActionCallback = null;
+    };
+
+    window.executeConfirm = () => {
+        if(confirmActionCallback) {
+            confirmActionCallback();
+        }
+        closeConfirmModal();
+    };
 
     function renderSetup() {
         setupList.innerHTML = '';
@@ -553,20 +618,18 @@
         const boardHeader = document.getElementById('board-header');
         const boardBody = document.getElementById('board-body');
         
-        // VẼ HEADER VỚI TÊN & ĐIỂM TỔNG CÓ MÀU NHẬN DIỆN RIÊNG
         let headerHTML = `<div class="board-col col-stt" style="justify-content:flex-end; padding-bottom:12px;">VÁN</div>`;
         players.forEach((p, i) => {
             const displayName = p.name || `P${i + 1}`;
-            const pColor = playerColors[i % playerColors.length];
+            const colorClass = `color-${i % 5}`; 
             headerHTML += `
                 <div class="board-col">
-                    <div class="col-name" style="color: ${pColor};">${displayName}</div>
-                    <div class="col-total" style="color: ${pColor};">${p.score}</div>
+                    <div class="col-name ${colorClass}">${displayName}</div>
+                    <div class="col-total ${colorClass}">${p.score}</div>
                 </div>`;
         });
         boardHeader.innerHTML = headerHTML;
 
-        // VẼ DÒNG LỊCH SỬ
         let rowsHTML = '';
         const reversedRounds = [...rounds].reverse();
         
@@ -578,9 +641,9 @@
             
             players.forEach(p => {
                 const score = round.scores[p.id] || 0;
-                let colorClass = score > 0 ? 'positive' : (score < 0 ? 'negative' : '');
+                let scoreClass = score > 0 ? 'positive' : (score < 0 ? 'negative' : '');
                 let displayScore = score > 0 ? `+${score}` : score;
-                innerHTML += `<div class="board-col col-score ${colorClass}">${displayScore}</div>`;
+                innerHTML += `<div class="board-col col-score ${scoreClass}">${displayScore}</div>`;
             });
             
             rowsHTML += `<div class="history-row editable-row" onclick="openEditModal(${trueIndex})">${innerHTML}</div>`;
@@ -599,7 +662,7 @@
             const displayName = p.name || `P${i + 1}`;
             inputsDiv.innerHTML += `
                 <div class="input-score-row">
-                    <div style="font-size: 18px; font-weight: bold;">${avatars[i % avatars.length]} ${displayName}</div>
+                    <div style="font-size: 18px; font-weight: bold;">${avatars[i % avatars.length]} <span class="color-${i % 5}">${displayName}</span></div>
                     <input type="number" id="input-round-p${p.id}" placeholder="0" onfocus="this.select()">
                 </div>
             `;
@@ -640,7 +703,7 @@
             const currentScore = round.scores[p.id] || 0;
             inputsDiv.innerHTML += `
                 <div class="input-score-row">
-                    <div style="font-size: 18px; font-weight: bold;">${avatars[i % avatars.length]} ${displayName}</div>
+                    <div style="font-size: 18px; font-weight: bold;">${avatars[i % avatars.length]} <span class="color-${i % 5}">${displayName}</span></div>
                     <input type="number" id="edit-round-p${p.id}" value="${currentScore}" onfocus="this.select()">
                 </div>
             `;
@@ -662,14 +725,15 @@
         renderGame();
     };
 
-    window.deleteRound = () => {
+    // ĐÃ SỬA: SỬ DỤNG POPUP CẢNH BÁO MỚI THAY VÌ CONFIRM MẶC ĐỊNH
+    window.confirmDeleteRound = () => {
         if(editingIndex === -1) return;
-        if(confirm('Bạn có chắc chắn muốn xóa hẳn ván này không? Toàn bộ điểm sẽ được tính lại.')) {
+        showConfirmModal('Bạn có chắc chắn muốn xóa hẳn ván này không?\nToàn bộ điểm sẽ được tự động tính lại.', () => {
             rounds.splice(editingIndex, 1);
             saveData();
             closeModal('modal-edit');
             renderGame();
-        }
+        });
     };
 
     window.closeModal = (id) => {
@@ -702,13 +766,14 @@
         }
     }
 
+    // ĐÃ SỬA: SỬ DỤNG POPUP CẢNH BÁO MỚI KHI BẤM NÚT CHƠI LẠI
     btnReset.onclick = () => {
-        if(confirm('Chơi lại từ đầu? Thao tác này sẽ xóa toàn bộ lịch sử ván cược hiện tại!')) {
+        showConfirmModal('Bạn muốn chơi lại từ đầu?\nToàn bộ lịch sử điểm của bàn này sẽ bị xóa sạch!', () => {
             rounds = [];
             players.forEach(p => p.score = 0);
             saveData();
             renderGame();
-        }
+        });
     };
 
     window.newGame = () => {
