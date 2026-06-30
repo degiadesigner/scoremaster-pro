@@ -464,14 +464,50 @@
             <button class="btn btn-primary" id="btn-start" style="margin-top: 30px;">BẮT ĐẦU VÁN MỚI</button>
         </div>
 
-        <!-- MÀN HÌNH CHƠI GAME -->
-        <div id="screen-game" class="screen">
-            <div class="goal-text" id="goal-display">🎯 Chạm mốc 100 điểm là THUA</div>
-            
-            <div id="game-list" style="display:flex; flex-direction:column; gap:8px;">
-                <!-- Render từ JS -->
-            </div>
+      <!-- MÀN HÌNH CHƠI GAME DẠNG BẢNG -->
+<div id="screen-game" class="screen">
+    <div class="goal-text" id="goal-display">🎯 Chạm mốc 100 điểm là THUA</div>
+    
+    <div class="history-board">
+        <!-- Hàng tiêu đề (Dính chặt trên cùng): Tên & Tổng điểm -->
+        <div class="board-header" id="board-header">
+            <!-- Render từ JS -->
         </div>
+        <!-- Thân bảng: Lịch sử các ván (Mới nhất nằm trên) -->
+        <div class="board-body" id="board-body">
+            <!-- Render từ JS -->
+        </div>
+    </div>
+
+    <!-- Nút chốt ván siêu to khổng lồ -->
+    <button class="btn btn-primary" style="margin-top: 16px;" onclick="openRoundModal()">+ NHẬP ĐIỂM VÁN MỚI</button>
+</div>
+
+<!-- MODAL NHẬP ĐIỂM 1 VÁN CHO TẤT CẢ -->
+<div id="modal-round" class="modal">
+    <div class="modal-box">
+        <div class="modal-title">NHẬP ĐIỂM VÁN <span id="current-round-number"></span></div>
+        <div id="round-inputs" style="display: flex; flex-direction: column; gap: 12px; margin: 16px 0;">
+            <!-- Render từ JS -->
+        </div>
+        <div style="display:flex; gap:10px;">
+            <button class="btn btn-secondary" onclick="closeModal('modal-round')">Hủy</button>
+            <button class="btn btn-primary" onclick="saveRound()">Lưu Ván</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL XẾP HẠNG CHUNG CUỘC (1 ĐẾN 5) -->
+<div id="modal-ranking" class="modal">
+    <div class="modal-box" style="background: var(--bg-color);">
+        <div class="modal-title" style="font-size: 28px;">🏆 KẾT QUẢ CHUNG CUỘC</div>
+        <div id="ranking-list" style="display: flex; flex-direction: column; gap: 10px; margin: 20px 0;">
+            <!-- Render từ JS -->
+        </div>
+        <button class="btn btn-primary" onclick="newGame()">LẬP BÀN MỚI</button>
+        <button class="btn btn-secondary" style="margin-top: 10px;" onclick="closeModal('modal-ranking')">Xem lại Lịch sử</button>
+    </div>
+</div>
 
         <!-- BẢN QUYỀN LUÔN NẰM DƯỚI CÙNG -->
         <div class="copyright-footer">
