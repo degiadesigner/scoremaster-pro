@@ -4,136 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tính Điểm Master by MinhTT</title>
-<link rel="icon" type="image/png" href="logo.png">
-<link rel="apple-touch-icon" href="logo.png">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
     <link rel="manifest" href="manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <!-- THÊM 3 DÒNG NÀY VÀO TRƯỚC THẺ <style> -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- FONT CHỮ MONTSERRAT -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <style>
-        /* BẢNG LỊCH SỬ ĐIỂM */
-.history-board {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    background: var(--c-dark);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-}
-
-.board-header {
-    display: flex;
-    background: #1e2126;
-    padding: 12px 0;
-    border-bottom: 2px solid var(--c-orange);
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-.board-col {
-    flex: 1;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border-right: 1px solid rgba(255,255,255,0.05);
-}
-.board-col:last-child { border-right: none; }
-
-.col-stt {
-    flex: 0 0 50px; /* Cột STT nhỏ gọn */
-    color: #888;
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.col-name {
-    font-size: 14px;
-    font-weight: 800;
-    color: #aaa;
-    margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0 4px;
-}
-
-.col-total {
-    font-size: 26px;
-    font-weight: 900;
-    color: var(--text-light);
-}
-
-.board-body {
-    overflow-y: auto;
-    max-height: 50vh; /* Giới hạn chiều cao để cuộn */
-}
-
-.history-row {
-    display: flex;
-    padding: 16px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    align-items: center;
-}
-.history-row:nth-child(even) {
-    background: rgba(255,255,255,0.02);
-}
-
-.col-score {
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.col-score.positive { color: var(--c-red); } /* Điểm cộng (Thua) màu đỏ */
-.col-score.negative { color: var(--c-green); } /* Điểm trừ (Thắng) màu xanh */
-
-/* UI DÒNG NHẬP ĐIỂM */
-.input-score-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(0,0,0,0.2);
-    padding: 10px 16px;
-    border-radius: 12px;
-}
-.input-score-row input {
-    width: 80px;
-    text-align: center;
-    font-size: 22px;
-    font-weight: bold;
-    padding: 8px;
-    border-radius: 8px;
-    border: none;
-    background: #1e2126;
-    color: white;
-}
-
-/* UI XẾP HẠNG */
-.rank-item {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    background: rgba(255,255,255,0.05);
-    border-radius: 12px;
-    gap: 16px;
-}
-.rank-medal { font-size: 32px; }
-.rank-name { flex: 1; font-size: 20px; font-weight: 800; }
-.rank-score { font-size: 28px; font-weight: 900; color: var(--c-orange); }
+        /* 1. KHAI BÁO BIẾN & RESET */
         :root {
             --bg-color: #121418;
             --text-light: #FFFFFF;
-            /* Hệ màu bệt - Rất nhẹ cho máy, không gây lag */
             --c-red: #D9534F;
             --c-orange: #F0AD4E;
-            --c-blue: #3A87AD;
             --c-green: #5CB85C;
-            --c-purple: #9B59B6;
             --c-dark: #2B2E33;
         }
 
@@ -141,11 +30,10 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            /* Tắt tính năng bôi đen text và chạm đúp phóng to gây lỗi trên di động */
             user-select: none;
             -webkit-user-select: none;
             touch-action: manipulation; 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Montserrat', sans-serif !important; 
         }
 
         body {
@@ -166,56 +54,65 @@
             height: 100%;
         }
 
-   /* TOÀN BỘ CSS CHO PHẦN ĐẦU TRANG */
-.header {
-    display: flex;
-    flex-direction: column; /* Ép xếp dọc: Tiêu đề nằm trên, các nút nằm dưới */
-    justify-content: center;
-    align-items: center;
-    padding: 15px 0 20px 0;
-    gap: 16px; /* Khoảng cách an toàn giữa logo và hàng nút */
-    width: 100%;
-}
+        /* 2. HEADER & LOGO */
+        .header {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px 0 20px 0;
+            gap: 16px;
+            width: 100%;
+        }
 
-#header-title {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    font-size: 24px;
-    font-weight: 900;
-    color: var(--c-orange);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 0px 2px 4px rgba(0,0,0,0.5);
-}
+        #header-title {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--c-orange);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0px 2px 4px rgba(0,0,0,0.5);
+        }
 
-.header-icons {
-    width: 100%;
-    display: flex;
-    justify-content: space-between; /* Đẩy 2 nút ra sát 2 mép màn hình */
-    gap: 12px;
-    color: #aaa;
-    font-size: 14px;
-    font-weight: 500;
-}
+        .app-logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+            object-fit: cover;
+        }
 
-.header-icons span {
-    cursor: pointer;
-    padding: 8px 16px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 8px;
-}
+        .header-icons {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            color: #aaa;
+            font-size: 14px;
+            font-weight: 500;
+        }
 
-.app-logo {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-    object-fit: cover;
-}
-        /* SECTION TITLES - ĐẸP, CHUYÊN NGHIỆP, CĂN GIỮA */
+        .header-icons span {
+            cursor: pointer;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 8px;
+        }
+
+        /* 3. CÁC MÀN HÌNH (SCREENS) */
+        .screen {
+            display: none;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: 12px;
+        }
+        .screen.active { display: flex; }
+
         .section-title {
             text-align: center;
             color: #888;
@@ -237,100 +134,7 @@
             border-radius: 8px;
         }
 
-        /* MÀN HÌNH CHÍNH */
-        .screen {
-            display: none;
-            flex-direction: column;
-            flex-grow: 1;
-            gap: 12px;
-        }
-        .screen.active {
-            display: flex;
-        }
-
-        /* ROW NGƯỜI CHƠI */
-        .player-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-radius: 12px;
-            padding: 12px 16px;
-            height: 72px;
-        }
-
-        .p-red { background-color: var(--c-red); }
-        .p-orange { background-color: var(--c-orange); }
-        .p-blue { background-color: var(--c-blue); }
-        .p-green { background-color: var(--c-green); }
-        .p-purple { background-color: var(--c-purple); }
-
-        .player-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-
-        .name {
-            font-size: 20px;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .score-controls {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .btn-action {
-            width: 44px;
-            height: 44px;
-            background: transparent;
-            border: none;
-            color: rgba(255,255,255,0.7);
-            font-size: 32px;
-            font-weight: 400;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-
-        .btn-action:active {
-            background: rgba(0,0,0,0.2);
-            border-radius: 8px;
-            color: #FFF;
-        }
-
-        .score-value {
-            font-size: 36px;
-            font-weight: 700;
-            min-width: 60px;
-            text-align: center;
-            cursor: pointer;
-        }
-        
-        .score-value:active {
-            opacity: 0.5;
-        }
-
-        /* GIAO DIỆN SETUP */
+        /* 4. GIAO DIỆN SETUP */
         .setup-input-row {
             display: flex;
             gap: 10px;
@@ -347,14 +151,111 @@
             font-size: 18px;
             outline: none;
         }
-        
-        /* Căn giữa chữ cho ô nhập Mốc Điểm */
         .input-center {
             text-align: center !important;
             font-weight: 600;
             font-size: 20px !important;
         }
+        
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        
+        .btn-action {
+            width: 44px;
+            height: 44px;
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.7);
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
 
+        /* 5. GIAO DIỆN BẢNG LƯỚI (GAME BOARD) */
+        .history-board {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            background: var(--c-dark);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .board-header {
+            display: flex;
+            background: #1e2126;
+            padding: 12px 0;
+            border-bottom: 2px solid var(--c-orange);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .board-col {
+            flex: 1;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 1px solid rgba(255,255,255,0.05);
+        }
+        .board-col:last-child { border-right: none; }
+
+        .col-stt {
+            flex: 0 0 50px;
+            color: #888;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .col-name {
+            font-size: 13px;
+            font-weight: 800;
+            color: #aaa;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 4px;
+        }
+
+        .col-total {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--text-light);
+        }
+
+        .board-body {
+            overflow-y: auto;
+            flex-grow: 1;
+            max-height: 55vh;
+        }
+
+        .history-row {
+            display: flex;
+            padding: 16px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            align-items: center;
+        }
+        .history-row:nth-child(even) { background: rgba(255,255,255,0.02); }
+
+        .col-score { font-size: 20px; font-weight: 700; }
+        .col-score.positive { color: var(--c-red); }
+        .col-score.negative { color: var(--c-green); }
+
+        /* 6. MODALS & NÚT BẤM */
         .btn {
             padding: 16px;
             border-radius: 12px;
@@ -367,16 +268,9 @@
             margin-top: auto;
             text-transform: uppercase;
         }
-        .btn-primary {
-            background-color: var(--c-orange);
-            color: #000;
-        }
-        .btn-secondary {
-            background-color: var(--c-dark);
-            color: white;
-        }
+        .btn-primary { background-color: var(--c-orange); color: #000; }
+        .btn-secondary { background-color: rgba(255,255,255,0.1); color: white; }
 
-        /* MODAL */
         .modal {
             display: none;
             position: fixed;
@@ -387,7 +281,6 @@
             z-index: 100;
             padding: 16px;
         }
-
         .modal.active { display: flex; }
 
         .modal-box {
@@ -408,45 +301,40 @@
             color: var(--c-orange);
         }
 
-        .numpad {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+        .input-score-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0,0,0,0.2);
+            padding: 10px 16px;
+            border-radius: 12px;
         }
-
-        .num-btn {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            padding: 15px 0;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .num-btn:active { background: rgba(255,255,255,0.3); }
-
-        /* WINNER BANNER - CÀ KHỊA NGƯỜI THUA */
-        .winner-text {
-            font-size: 30px;
-            font-weight: 900;
-            color: var(--c-orange);
+        .input-score-row input {
+            width: 80px;
             text-align: center;
-            margin: 20px 0;
-            text-shadow: 2px 2px 0px #000;
-            text-transform: uppercase;
-            line-height: 1.2;
+            font-size: 22px;
+            font-weight: bold;
+            padding: 8px;
+            border-radius: 8px;
+            border: none;
+            background: #1e2126;
+            color: white;
+            outline: none;
         }
-        .loser-badge {
-            color: var(--c-red); 
-            font-size: 40px; 
-            display: block; 
-            margin-top: 5px;
-            text-shadow: 2px 2px 0px #000;
-        }
+        .input-score-row input:focus { border: 1px solid var(--c-orange); }
 
-        /* FOOTER BẢN QUYỀN */
+        .rank-item {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            gap: 16px;
+        }
+        .rank-medal { font-size: 22px; font-weight: bold; width: 80px; }
+        .rank-name { flex: 1; font-size: 18px; font-weight: 800; text-transform: uppercase; }
+        .rank-score { font-size: 26px; font-weight: 900; color: var(--c-orange); }
+
         .copyright-footer {
             text-align: center;
             font-size: 12px;
@@ -456,220 +344,80 @@
             font-weight: 500;
             letter-spacing: 0.5px;
         }
-/* 1. ĐỔI TOÀN BỘ FONT CHỮ SANG MONTSERRAT */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation; 
-    /* Font mới: Đẳng cấp, nét dày, số cực đẹp */
-    font-family: 'Montserrat', sans-serif !important; 
-}
-
-/* 2. LÀM NỔI BẬT KHỐI NGƯỜI CHƠI (HIỆU ỨNG THẺ BÀI 3D) */
-.player-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 16px; /* Bo góc tròn trịa hơn */
-    padding: 12px 16px;
-    height: 76px; /* Tăng nhẹ chiều cao để chứa số to */
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* Đổ bóng khối giúp thanh điểm nổi lên */
-    border: 1px solid rgba(255,255,255,0.08); /* Viền sáng nhẹ sang trọng */
-}
-
-/* 3. TÊN NGƯỜI CHƠI: DÀY, RÕ NÉT */
-.name {
-    font-size: 20px; /* Chữ to rõ */
-    font-weight: 800; /* Nét siêu dày */
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.4); /* Bóng chữ giúp tách bạch khỏi nền màu */
-}
-
-/* 4. SỐ ĐIỂM: KHỔNG LỒ, BẮT MẮT NHẤT MÀN HÌNH */
-.score-value {
-    font-size: 42px; /* Phóng to số điểm */
-    font-weight: 900; /* Nét dày nhất (Black) */
-    min-width: 65px;
-    text-align: center;
-    cursor: pointer;
-    text-shadow: 2px 3px 5px rgba(0,0,0,0.4); /* Đổ bóng sâu cho số điểm nổi bần bật */
-    letter-spacing: -1px; /* Kéo các số sát lại cho khỏe khoắn */
-}
-
-/* 5. NÚT CỘNG/TRỪ (+ / -) SẮC NÉT */
-.btn-action {
-    width: 44px;
-    height: 44px;
-    background: transparent;
-    border: none;
-    color: rgba(255,255,255,0.9);
-    font-size: 34px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-}
-
-/* 6. TỐI ƯU CÁC TIÊU ĐỀ TRONG APP */
-#header-title {
-    font-size: 24px;
-    font-weight: 900;
-    color: var(--c-orange);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    text-shadow: 0px 2px 4px rgba(0,0,0,0.5); /* Tiêu đề chính cũng cần nổi bật */
-    order: 1;
-    width: 100%;
-    text-align: center;
-}
     </style>
 </head>
 <body>
 
     <div class="container">
-    
-    <!-- HEADER LUÔN PHẢI NẰM NGAY DƯỚI CONTAINER -->
-    <div class="header">
-        <!-- Tiêu đề và Logo -->
-        <div id="header-title">
-            <img src="logo.png" alt="Logo" class="app-logo">
-            TÍNH ĐIỂM MASTER
-        </div>
         
-        <!-- Hàng nút bấm Cài đặt / Chơi lại -->
-        <div class="header-icons">
-            <span id="btn-back" style="display:none;">⚙️ Cài đặt</span>
-            <span id="btn-reset" style="display:none;">🔄 Chơi lại</span>
+        <!-- HEADER -->
+        <div class="header">
+            <div id="header-title">
+                <img src="logo.png" alt="Logo" class="app-logo">
+                TÍNH ĐIỂM MASTER
+            </div>
+            <div class="header-icons">
+                <span id="btn-back" style="display:none;">⚙️ Cài đặt</span>
+                <span id="btn-reset" style="display:none;">🔄 Chơi lại</span>
+            </div>
         </div>
-    </div>
-
-    <!-- CÁC PHẦN BÊN DƯỚI GIỮ NGUYÊN (Màn hình Setup, Màn hình Chơi...) -->
 
         <!-- MÀN HÌNH SETUP -->
         <div id="screen-setup" class="screen active">
-            
             <h3 class="section-title">DANH SÁCH ĐẤU THỦ</h3>
-            
-            <div id="setup-list" style="display:flex; flex-direction:column; gap:10px;">
-                <!-- Render từ JS -->
-            </div>
-            
+            <div id="setup-list" style="display:flex; flex-direction:column; gap:10px;"></div>
             <button class="btn btn-secondary" id="btn-add-player" style="margin-top:10px;">+ Thêm người chơi</button>
 
             <h3 class="section-title" style="margin-top:24px;">MỐC ĐIỂM THUA CUỘC</h3>
-            
             <div class="setup-input-row">
-                <!-- Chữ số được căn giữa tuyệt đối -->
                 <input type="number" id="input-limit" class="input-center" placeholder="Ví dụ: 100, để trống = vô tận" value="100">
             </div>
-
             <button class="btn btn-primary" id="btn-start" style="margin-top: 30px;">BẮT ĐẦU VÁN MỚI</button>
         </div>
 
-      <!-- MÀN HÌNH CHƠI GAME DẠNG BẢNG -->
-<div id="screen-game" class="screen">
-    <div class="goal-text" id="goal-display">🎯 Chạm mốc 100 điểm là THUA</div>
-    
-    <div class="history-board">
-        <!-- Hàng tiêu đề (Dính chặt trên cùng): Tên & Tổng điểm -->
-        <div class="board-header" id="board-header">
-            <!-- Render từ JS -->
+        <!-- MÀN HÌNH CHƠI GAME DẠNG BẢNG LƯỚI -->
+        <div id="screen-game" class="screen">
+            <div class="goal-text" id="goal-display">🎯 Chạm mốc 100 điểm là THUA</div>
+            <div class="history-board">
+                <div class="board-header" id="board-header"></div>
+                <div class="board-body" id="board-body"></div>
+            </div>
+            <button class="btn btn-primary" style="margin-top: 16px; padding: 20px; font-size: 18px;" onclick="openRoundModal()">+ NHẬP ĐIỂM VÁN MỚI</button>
         </div>
-        <!-- Thân bảng: Lịch sử các ván (Mới nhất nằm trên) -->
-        <div class="board-body" id="board-body">
-            <!-- Render từ JS -->
-        </div>
-    </div>
 
-    <!-- Nút chốt ván siêu to khổng lồ -->
-    <button class="btn btn-primary" style="margin-top: 16px;" onclick="openRoundModal()">+ NHẬP ĐIỂM VÁN MỚI</button>
-</div>
-
-<!-- MODAL NHẬP ĐIỂM 1 VÁN CHO TẤT CẢ -->
-<div id="modal-round" class="modal">
-    <div class="modal-box">
-        <div class="modal-title">NHẬP ĐIỂM VÁN <span id="current-round-number"></span></div>
-        <div id="round-inputs" style="display: flex; flex-direction: column; gap: 12px; margin: 16px 0;">
-            <!-- Render từ JS -->
-        </div>
-        <div style="display:flex; gap:10px;">
-            <button class="btn btn-secondary" onclick="closeModal('modal-round')">Hủy</button>
-            <button class="btn btn-primary" onclick="saveRound()">Lưu Ván</button>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL XẾP HẠNG CHUNG CUỘC (1 ĐẾN 5) -->
-<div id="modal-ranking" class="modal">
-    <div class="modal-box" style="background: var(--bg-color);">
-        <div class="modal-title" style="font-size: 28px;">🏆 KẾT QUẢ CHUNG CUỘC</div>
-        <div id="ranking-list" style="display: flex; flex-direction: column; gap: 10px; margin: 20px 0;">
-            <!-- Render từ JS -->
-        </div>
-        <button class="btn btn-primary" onclick="newGame()">LẬP BÀN MỚI</button>
-        <button class="btn btn-secondary" style="margin-top: 10px;" onclick="closeModal('modal-ranking')">Xem lại Lịch sử</button>
-    </div>
-</div>
-
-        <!-- BẢN QUYỀN LUÔN NẰM DƯỚI CÙNG -->
+        <!-- BẢN QUYỀN -->
         <div class="copyright-footer">
             © Bản quyền MinhTT, 2026<br>
             SĐT: 0987334004
         </div>
-
     </div>
 
-    <!-- MODAL NHẬP ĐIỂM NHANH -->
-    <div id="modal-score" class="modal">
+    <!-- MODAL NHẬP ĐIỂM VÁN -->
+    <div id="modal-round" class="modal">
         <div class="modal-box">
-            <div class="modal-title" id="modal-player-name">NHẬP ĐIỂM</div>
-            <input type="number" id="quick-score-input" style="font-size:40px; text-align:center; padding:10px; border-radius:10px; border:none; outline:none; background:#1e2126; color:#fff;" placeholder="0">
-            
-            <div class="numpad">
-                <button class="num-btn" onclick="addVal(1)">+1</button>
-                <button class="num-btn" onclick="addVal(5)">+5</button>
-                <button class="num-btn" onclick="addVal(10)">+10</button>
-                <button class="num-btn" onclick="addVal(20)">+20</button>
-                <button class="num-btn" onclick="addVal(-1)">-1</button>
-                <button class="num-btn" onclick="addVal(-5)">-5</button>
-                <button class="num-btn" onclick="addVal(-10)">-10</button>
-                <button class="num-btn" onclick="addVal(-20)">-20</button>
-            </div>
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <button class="btn btn-secondary" onclick="closeModal('modal-score')">Hủy</button>
-                <button class="btn btn-primary" id="btn-confirm-score">Xong</button>
+            <div class="modal-title">NHẬP ĐIỂM VÁN <span id="current-round-number"></span></div>
+            <div id="round-inputs" style="display: flex; flex-direction: column; gap: 12px; margin: 16px 0;"></div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn btn-secondary" onclick="closeModal('modal-round')">Hủy</button>
+                <button class="btn btn-primary" onclick="saveRound()">Lưu Ván</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL THÔNG BÁO NGƯỜI THUA (CÀ KHỊA) -->
-    <div id="modal-winner" class="modal">
-        <div class="modal-box" style="align-items: center; background: transparent;">
-            <div style="font-size: 70px; margin-bottom: -15px;">🎉</div>
-            <div class="winner-text">
-                CHÚC MỪNG<br>
-                <span id="winner-name" style="font-size: 55px; color: #fff; display: block; margin-top: 10px;"></span>
-                <span class="loser-badge">ĐÃ THUA</span>
-            </div>
-            <button class="btn btn-primary" onclick="closeModal('modal-winner');">TIẾP TỤC CHƠI</button>
-            <button class="btn btn-secondary" onclick="newGame()">LẬP BÀN MỚI</button>
+    <!-- MODAL XẾP HẠNG CHUNG CUỘC -->
+    <div id="modal-ranking" class="modal">
+        <div class="modal-box" style="background: var(--bg-color);">
+            <div class="modal-title" style="font-size: 26px;">🏆 KẾT QUẢ CHUNG CUỘC</div>
+            <div id="ranking-list" style="display: flex; flex-direction: column; gap: 10px; margin: 20px 0;"></div>
+            <button class="btn btn-primary" onclick="newGame()">LẬP BÀN MỚI</button>
+            <button class="btn btn-secondary" style="margin-top: 10px;" onclick="closeModal('modal-ranking')">Xem lại Lịch sử</button>
         </div>
     </div>
 
 <script>
-    const colors = ['p-red', 'p-orange', 'p-blue', 'p-green', 'p-purple'];
     const avatars = ['👨', '👩', '👱‍♂️', '👧', '🧔'];
     
-    // TẢI DỮ LIỆU TÊN NGƯỜI CHƠI
+    // TẢI DỮ LIỆU TỪ BỘ NHỚ TRÌNH DUYỆT
     const savedPlayers = localStorage.getItem('masterScore_players');
     let players = savedPlayers ? JSON.parse(savedPlayers) : [
         { id: 1, name: '', score: 0 },
@@ -679,11 +427,9 @@
         { id: 5, name: '', score: 0 }
     ];
     
-    // TẢI DỮ LIỆU LỊCH SỬ CÁC VÁN ĐẤU
     let rounds = JSON.parse(localStorage.getItem('masterScore_rounds')) || [];
     let goal = 100;
 
-    // KẾT NỐI VỚI GIAO DIỆN
     const screenSetup = document.getElementById('screen-setup');
     const screenGame = document.getElementById('screen-game');
     const setupList = document.getElementById('setup-list');
@@ -691,13 +437,12 @@
     const btnBack = document.getElementById('btn-back');
     const btnReset = document.getElementById('btn-reset');
 
-    // HÀM LƯU TRỮ CHUNG
     function saveData() {
         localStorage.setItem('masterScore_players', JSON.stringify(players));
         localStorage.setItem('masterScore_rounds', JSON.stringify(rounds));
     }
 
-    // --- PHẦN 1: MÀN HÌNH CÀI ĐẶT BAN ĐẦU ---
+    // --- PHẦN 1: SETUP NGƯỜI CHƠI ---
     function renderSetup() {
         setupList.innerHTML = '';
         players.forEach((p, i) => {
@@ -758,7 +503,7 @@
         btnReset.style.display = 'none';
     };
 
-    // --- PHẦN 2: LOGIC BẢNG ĐIỂM & LỊCH SỬ NHẬP ---
+    // --- PHẦN 2: LỊCH SỬ & ĐIỂM SỐ ---
     function calculateTotals() {
         players.forEach(p => p.score = 0);
         rounds.forEach(round => {
@@ -773,7 +518,6 @@
         const boardHeader = document.getElementById('board-header');
         const boardBody = document.getElementById('board-body');
         
-        // Vẽ Hàng Tiêu Đề
         let headerHTML = `<div class="board-col col-stt">VÁN</div>`;
         players.forEach((p, i) => {
             const displayName = p.name || `P${i + 1}`;
@@ -785,7 +529,6 @@
         });
         boardHeader.innerHTML = headerHTML;
 
-        // Vẽ Lịch Sử (Ván mới nhất đẩy lên trên cùng)
         boardBody.innerHTML = '';
         const reversedRounds = [...rounds].reverse();
         
@@ -825,7 +568,6 @@
         });
         document.getElementById('modal-round').classList.add('active');
         
-        // Tự động nhấp nháy con trỏ vào ô nhập của người đầu tiên
         setTimeout(() => {
             if(players.length > 0) {
                 const firstInput = document.getElementById(`input-round-p${players[0].id}`);
@@ -851,22 +593,19 @@
         document.getElementById(id).classList.remove('active');
     };
 
-    // --- PHẦN 3: XẾP HẠNG CHUNG CUỘC ---
+    // --- PHẦN 3: XẾP HẠNG ---
     function checkGameOver() {
         if(!goal) return;
         const isGameOver = players.some(p => p.score >= goal);
         
         if(isGameOver) {
-            // Sắp xếp: Ai điểm thấp nhất sẽ đứng Hạng 1
             const rankedPlayers = [...players].sort((a, b) => a.score - b.score);
-            
             const medals = ['🥇 NHẤT', '🥈 NHÌ', '🥉 BA', '🎖️ TƯ', '💀 BÉT'];
             const listDiv = document.getElementById('ranking-list');
             listDiv.innerHTML = '';
             
             rankedPlayers.forEach((p, index) => {
                 const displayName = p.name || `Người chơi ${index + 1}`;
-                // Luôn cho người cuối cùng làm Bét
                 const rankName = (index === rankedPlayers.length - 1) ? medals[4] : (medals[index] || `HẠNG ${index + 1}`);
                 
                 listDiv.innerHTML += `
@@ -877,7 +616,6 @@
                     </div>
                 `;
             });
-            
             document.getElementById('modal-ranking').classList.add('active');
         }
     }
@@ -896,12 +634,11 @@
         rounds = [];
         players.forEach(p => p.score = 0);
         saveData();
-        btnBack.click(); // Quay về màn hình nhập tên
+        btnBack.click();
     };
 
-    // KÍCH HOẠT APP
+    // KHỞI ĐỘNG
     renderSetup();
-
 </script>
 </body>
 </html>
