@@ -10,13 +10,11 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <!-- FONT CHỮ MONTSERRAT -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
     
     <style>
-        /* 1. KHAI BÁO BIẾN & RESET */
         :root {
             --bg-color: #121418;
             --text-light: #FFFFFF;
@@ -30,6 +28,9 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+            touch-action: manipulation; 
             font-family: 'Montserrat', sans-serif !important; 
         }
 
@@ -40,14 +41,8 @@
             display: flex;
             flex-direction: column;
             padding: env(safe-area-inset-top) 16px calc(env(safe-area-inset-bottom) + 16px) 16px;
-            
-            /* SỬA LỖI KHÓA PHÍM: Chỉ ngăn bôi đen ở Body, chừa lại thẻ Input */
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: manipulation; 
         }
 
-        /* ÉP CÁC Ô NHẬP LIỆU PHẢI CHO PHÉP TƯƠNG TÁC/BÔI ĐEN */
         input {
             user-select: auto !important;
             -webkit-user-select: auto !important;
@@ -62,7 +57,6 @@
             height: 100%;
         }
 
-        /* 2. HEADER & LOGO */
         .header {
             display: flex;
             flex-direction: column;
@@ -112,7 +106,6 @@
             border-radius: 8px;
         }
 
-        /* 3. CÁC MÀN HÌNH (SCREENS) */
         .screen {
             display: none;
             flex-direction: column;
@@ -142,7 +135,6 @@
             border-radius: 8px;
         }
 
-        /* 4. GIAO DIỆN SETUP */
         .setup-input-row {
             display: flex;
             gap: 10px;
@@ -190,7 +182,7 @@
             cursor: pointer;
         }
 
-        /* 5. GIAO DIỆN BẢNG LƯỚI (GAME BOARD) */
+        /* ----- GIAO DIỆN BẢNG LƯỚI ĐẲNG CẤP ----- */
         .history-board {
             display: flex;
             flex-direction: column;
@@ -201,14 +193,16 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
+        /* Header 3D Tách Biệt */
         .board-header {
             display: flex;
-            background: #1e2126;
-            padding: 12px 0;
-            border-bottom: 2px solid var(--c-orange);
+            background: #17191e;
+            padding: 18px 0 14px 0;
+            border-bottom: 2px solid rgba(255,255,255,0.05);
             position: sticky;
             top: 0;
             z-index: 10;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.4);
         }
 
         .board-col {
@@ -217,9 +211,15 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            border-right: 1px solid rgba(255,255,255,0.05);
+            border-right: 1px solid rgba(255,255,255,0.03);
         }
         .board-col:last-child { border-right: none; }
+
+        /* Hiệu ứng ZEBRA DỌC: Các cột chẵn được tô nền mờ */
+        .board-header .board-col:nth-child(even),
+        .history-row .board-col:nth-child(even) {
+            background-color: rgba(255,255,255,0.025);
+        }
 
         .col-stt {
             flex: 0 0 50px;
@@ -229,20 +229,24 @@
         }
 
         .col-name {
-            font-size: 13px;
-            font-weight: 800;
-            color: #aaa;
-            margin-bottom: 4px;
+            font-size: 14px;
+            font-weight: 900;
+            text-transform: uppercase;
+            margin-bottom: 2px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             padding: 0 4px;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
         }
 
+        /* Phóng to số điểm tổng */
         .col-total {
-            font-size: 26px;
+            font-size: 34px;
             font-weight: 900;
-            color: var(--text-light);
+            letter-spacing: -1px;
+            text-shadow: 2px 3px 6px rgba(0,0,0,0.5);
         }
 
         .board-body {
@@ -254,19 +258,18 @@
         .history-row {
             display: flex;
             padding: 16px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
             align-items: center;
         }
         
         .editable-row { cursor: pointer; transition: 0.2s; }
-        .editable-row:active { background: rgba(255,255,255,0.1); }
-        .history-row:nth-child(even) { background: rgba(255,255,255,0.02); }
+        .editable-row:active { background: rgba(255,255,255,0.08); }
 
         .col-score { font-size: 20px; font-weight: 700; }
         .col-score.positive { color: var(--c-red); }
         .col-score.negative { color: var(--c-green); }
 
-        /* 6. MODALS & NÚT BẤM */
+        /* ----- MODALS & NÚT BẤM ----- */
         .btn {
             padding: 16px;
             border-radius: 12px;
@@ -361,7 +364,6 @@
 <body>
 
     <div class="container">
-        <!-- HEADER -->
         <div class="header">
             <div id="header-title">
                 <img src="logo.png" alt="Logo" class="app-logo">
@@ -373,7 +375,6 @@
             </div>
         </div>
 
-        <!-- MÀN HÌNH SETUP -->
         <div id="screen-setup" class="screen active">
             <h3 class="section-title">DANH SÁCH ĐẤU THỦ</h3>
             <div id="setup-list" style="display:flex; flex-direction:column; gap:10px;"></div>
@@ -386,7 +387,6 @@
             <button class="btn btn-primary" id="btn-start" style="margin-top: 30px;">BẮT ĐẦU VÁN MỚI</button>
         </div>
 
-        <!-- MÀN HÌNH CHƠI GAME -->
         <div id="screen-game" class="screen">
             <div class="goal-text" id="goal-display">🎯 Chạm mốc 100 điểm là THUA</div>
             <div class="history-board">
@@ -414,7 +414,7 @@
         </div>
     </div>
 
-    <!-- MODAL SỬA ĐIỂM CŨ -->
+    <!-- MODAL SỬA ĐIỂM -->
     <div id="modal-edit" class="modal">
         <div class="modal-box">
             <div class="modal-title">SỬA ĐIỂM VÁN <span id="edit-round-number"></span></div>
@@ -429,7 +429,7 @@
         </div>
     </div>
 
-    <!-- MODAL KẾT QUẢ -->
+    <!-- MODAL XẾP HẠNG -->
     <div id="modal-ranking" class="modal">
         <div class="modal-box" style="background: var(--bg-color);">
             <div class="modal-title" style="font-size: 26px;">🏆 KẾT QUẢ CHUNG CUỘC</div>
@@ -441,6 +441,8 @@
 
 <script>
     const avatars = ['👨', '👩', '👱‍♂️', '👧', '🧔'];
+    // BẢNG MÀU NHẬN DIỆN CHO TỪNG NGƯỜI CHƠI
+    const playerColors = ['#D9534F', '#F0AD4E', '#3A87AD', '#5CB85C', '#9B59B6'];
     
     const savedPlayers = localStorage.getItem('masterScore_players');
     let players = savedPlayers ? JSON.parse(savedPlayers) : [
@@ -540,18 +542,20 @@
         const boardHeader = document.getElementById('board-header');
         const boardBody = document.getElementById('board-body');
         
-        let headerHTML = `<div class="board-col col-stt">VÁN</div>`;
+        // VẼ HEADER VỚI TÊN & ĐIỂM TỔNG CÓ MÀU NHẬN DIỆN RIÊNG
+        let headerHTML = `<div class="board-col col-stt" style="justify-content:flex-end; padding-bottom:12px;">VÁN</div>`;
         players.forEach((p, i) => {
             const displayName = p.name || `P${i + 1}`;
+            const pColor = playerColors[i % playerColors.length];
             headerHTML += `
                 <div class="board-col">
-                    <div class="col-name">${displayName}</div>
-                    <div class="col-total">${p.score}</div>
+                    <div class="col-name" style="color: ${pColor};">${displayName}</div>
+                    <div class="col-total" style="color: ${pColor};">${p.score}</div>
                 </div>`;
         });
         boardHeader.innerHTML = headerHTML;
 
-        // VẼ BẢNG BẰNG CHUỖI HTML ĐỂ ĐẢM BẢO ONCLICK HOẠT ĐỘNG 100%
+        // VẼ DÒNG LỊCH SỬ
         let rowsHTML = '';
         const reversedRounds = [...rounds].reverse();
         
@@ -568,7 +572,6 @@
                 innerHTML += `<div class="board-col col-score ${colorClass}">${displayScore}</div>`;
             });
             
-            // Nhúng thẳng hàm onclick vào HTML để máy nào cũng chạm được
             rowsHTML += `<div class="history-row editable-row" onclick="openEditModal(${trueIndex})">${innerHTML}</div>`;
         });
         
